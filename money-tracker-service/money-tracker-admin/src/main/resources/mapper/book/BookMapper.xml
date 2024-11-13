@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.book.mapper.BookMapper">
+
+    <resultMap type="Book" id="BookResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="bookName"    column="book_name"    />
+        <result property="bookAvatar"    column="book_avatar"    />
+        <result property="userAudit"    column="user_audit"    />
+        <result property="showSearch"    column="show_search"    />
+        <result property="attr1"    column="attr1"    />
+        <result property="attr2"    column="attr2"    />
+        <result property="attr3"    column="attr3"    />
+        <result property="attr4"    column="attr4"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBookVo">
+        select
+            id,
+            user_id,
+            book_name,
+            book_avatar,
+            user_audit,
+            show_search,
+            attr1,
+            attr2,
+            attr3,
+            attr4,
+            del_flag,
+            create_id,
+            create_by,
+            create_time,
+            update_id,
+            update_by,
+            update_time,
+            remark
+        from book
+    </sql>
+
+    <sql id="selectListWhere">
+        <where>
+            and del_flag = '0'
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="bookName != null  and bookName != ''"> and book_name like concat('%', #{bookName}, '%')</if>
+            <if test="bookAvatar != null  and bookAvatar != ''"> and book_avatar = #{bookAvatar}</if>
+            <if test="userAudit != null "> and user_audit = #{userAudit}</if>
+            <if test="showSearch != null "> and show_search = #{showSearch}</if>
+            <if test="bookIds != null and bookIds.size() > 0">
+                and id in
+                <foreach item="item" collection="bookIds" separator="," open="("  close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.book.dto.BookQueryDTO" resultMap="BookResult">
+        <include refid="selectBookVo"/>
+        <include refid="selectListWhere"/>
+        order by create_time desc
+    </select>
+
+    <select id="selectBookList" parameterType="com.jcwl.admin.book.dto.BookQueryDTO" resultMap="BookResult">
+        WITH v_book AS (
+            SELECT
+                bu.default_book,
+                bu.auth,
+                bu.user_id,
+                b.id,
+                b.book_name,
+                b.book_avatar,
+                b.user_audit,
+                b.show_search,
+                b.del_flag,
+                b.create_time
+            FROM
+                book_user bu
+                    LEFT JOIN book b ON bu.book_id = b.id
+                <where>
+                    and bu.del_flag = '0' and  b.del_flag = '0'
+                    <if test="auth != null "> and bu.auth &gt;= #{auth}</if>
+                    <if test="userId != null "> and bu.user_id = #{userId}</if>
+                    <if test="bookName != null  and bookName != ''"> and b.book_name like concat('%', #{bookName}, '%')</if>
+                    <if test="userAudit != null "> and b.user_audit = #{userAudit}</if>
+                    <if test="showSearch != null "> and b.show_search = #{showSearch}</if>
+                </where>
+        )
+        SELECT * FROM v_book
+        order by default_book desc, create_time desc
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="BookResult">
+        <include refid="selectBookVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <insert id="insert" parameterType="Book" useGeneratedKeys="true" keyProperty="id">
+        insert into book
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="bookName != null and bookName != ''">book_name,</if>
+            <if test="bookAvatar != null">book_avatar,</if>
+            <if test="userAudit != null">user_audit,</if>
+            <if test="showSearch != null">show_search,</if>
+            <if test="attr1 != null">attr1,</if>
+            <if test="attr2 != null">attr2,</if>
+            <if test="attr3 != null">attr3,</if>
+            <if test="attr4 != null">attr4,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="bookName != null and bookName != ''">#{bookName},</if>
+            <if test="bookAvatar != null">#{bookAvatar},</if>
+            <if test="userAudit != null">#{userAudit},</if>
+            <if test="showSearch != null">#{showSearch},</if>
+            <if test="attr1 != null">#{attr1},</if>
+            <if test="attr2 != null">#{attr2},</if>
+            <if test="attr3 != null">#{attr3},</if>
+            <if test="attr4 != null">#{attr4},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into book
+        (
+        user_id,
+        book_name,
+        book_avatar,
+        user_audit,
+        show_search,
+        attr1,
+        attr2,
+        attr3,
+        attr4,
+        del_flag,
+        create_id,
+        create_by,
+        create_time,
+        update_id,
+        update_by,
+        update_time,
+        remark
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.userId},
+            #{item.bookName},
+            #{item.bookAvatar},
+            #{item.userAudit},
+            #{item.showSearch},
+            #{item.attr1},
+            #{item.attr2},
+            #{item.attr3},
+            #{item.attr4},
+            #{item.delFlag},
+            #{item.createId},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.remark}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="Book">
+        update book
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="bookName != null and bookName != ''">book_name = #{bookName},</if>
+            <if test="bookAvatar != null">book_avatar = #{bookAvatar},</if>
+            <if test="userAudit != null">user_audit = #{userAudit},</if>
+            <if test="showSearch != null">show_search = #{showSearch},</if>
+            <if test="attr1 != null">attr1 = #{attr1},</if>
+            <if test="attr2 != null">attr2 = #{attr2},</if>
+            <if test="attr3 != null">attr3 = #{attr3},</if>
+            <if test="attr4 != null">attr4 = #{attr4},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE book
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="user_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.userId}
+                </foreach>
+            </trim>
+            <trim prefix="book_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.bookName}
+                </foreach>
+            </trim>
+            <trim prefix="book_avatar = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.bookAvatar}
+                </foreach>
+            </trim>
+            <trim prefix="user_audit = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.userAudit}
+                </foreach>
+            </trim>
+            <trim prefix="show_search = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.showSearch}
+                </foreach>
+            </trim>
+            <trim prefix="attr1 = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.attr1}
+                </foreach>
+            </trim>
+            <trim prefix="attr2 = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.attr2}
+                </foreach>
+            </trim>
+            <trim prefix="attr3 = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.attr3}
+                </foreach>
+            </trim>
+            <trim prefix="attr4 = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.attr4}
+                </foreach>
+            </trim>
+            <trim prefix="del_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.delFlag}
+                </foreach>
+            </trim>
+            <trim prefix="create_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.createId}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.createBy}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.updateId}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.updateBy}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.updateTime}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.remark}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update book set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        update book set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,399 @@
+{
+  "data": [
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/01/CsoXNGFSifKEBYmKAAAAAKyBN6o840.png"
+      },
+      "remark": "现金账户",
+      "type": "0",
+      "name": "现金账户",
+      "id": "1",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/48/CsoXM2FSif6EAzKxAAAAALnMcJw367.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Cash",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "现金",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950481",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    },
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/4D/CsoXNGFSif-EX8T9AAAAAFkXwFE225.png"
+      },
+      "remark": "金融账户",
+      "type": "0",
+      "name": "金融账户",
+      "id": "2",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/09/CsoXM2FSifOEYsgnAAAAAMOEu9U801.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "DepositCard",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "银行卡",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950479",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    },
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/17/CsoXNGFSifaEX5yfAAAAAO4FA6o754.png"
+      },
+      "remark": "虚拟账户",
+      "type": "0",
+      "name": "虚拟账户",
+      "id": "3",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/05/CsoXNGFSifOES99BAAAAANV7Lwg152.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Online_Payment",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "微信钱包",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950495",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        },
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/46/CsoXNGFSif6EOqv6AAAAAHWvReM677.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Online_Payment",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "支付宝余额",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950483",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    },
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/09/CsoXM2FSifOEYsgnAAAAAMOEu9U801.png"
+      },
+      "remark": "负债账户",
+      "type": "1",
+      "name": "负债账户",
+      "id": "4",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/35/CsoXM2FSifuEUFMWAAAAAGhYg64237.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Liability",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "应付款项",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950485",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    },
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/08/CsoXNGFSifOENljsAAAAAOfa1No125.png"
+      },
+      "remark": "债权账户",
+      "type": "2",
+      "name": "债权账户",
+      "id": "15",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/42/CsoXM2FSif2EbsQoAAAAAArN63A897.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Debt",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "应收款项",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950487",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    },
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/22/CsoXNGFSifeENfN2AAAAAFr6Q7A340.png"
+      },
+      "remark": "信用卡",
+      "type": "1",
+      "name": "信用卡",
+      "id": "16",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/22/CsoXNGFSifeENfN2AAAAAFr6Q7A340.png"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Credit_Card",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "信用卡",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950489",
+          "credit_card_vo": {
+            "repayment_date_type": "1",
+            "repayment_date_show_switch": true
+          },
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    },
+    {
+      "amount": "0.00",
+      "hidden": false,
+      "icon": {
+        "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/41/CsoXNGFSif2EOksrAAAAABbeUBQ271.png"
+      },
+      "remark": "投资账户",
+      "type": "0",
+      "name": "投资账户",
+      "id": "23",
+      "accounts": [
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/46/CsoXM2FSif2EKdxVAAAAAD4QSSs370.png"
+          },
+          "investment": {
+            "name": "",
+            "id": "595573797774950493",
+            "account_no": "",
+            "sell_rate": "0.00000000",
+            "buy_rate": "0.00000000"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Stock",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "股票账户",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950493",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        },
+        {
+          "creator": {
+            "id": "0"
+          },
+          "hidden": false,
+          "icon": {
+            "url": "https://yunres.feidee.com/fnc_archive_pubfile/02/49/CsoXNGFSif6EJt07AAAAAM57xB0040.png"
+          },
+          "investment": {
+            "name": "",
+            "id": "595573797774950491",
+            "account_no": "",
+            "sell_rate": "0.00000000",
+            "buy_rate": "0.00000000"
+          },
+          "remark": "",
+          "balance_mask": false,
+          "type": "Fund",
+          "balance": "0.00",
+          "sub_accounts": [],
+          "parent_id": "0",
+          "name": "基金账户",
+          "currency": {
+            "symbol": "￥",
+            "code": "CNY",
+            "icon": {
+              "url": "https://yunres.feidee.com//fnc_archive_pubfile/00/DF/CsoXM2AGvN-EY-BsAAAAANmn1Og044.png"
+            },
+            "name": "人民币"
+          },
+          "counted_out_assets": true,
+          "id": "595573797774950491",
+          "card": {
+            "card_no": "",
+            "name": "",
+            "id": "0"
+          }
+        }
+      ],
+      "amount_mask": false
+    }
+  ]
+}

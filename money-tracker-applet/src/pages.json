@@ -1,0 +1,191 @@
+{
+  "easycom": {
+    "custom": {
+      "u-city-select": "@/components/u-city-select/u-city-select.vue",
+      "geek-(.*)": "@/components/geek-xd/components/geek-$1/geek-$1.vue",
+      "gx-(.*)": "@/components/geek-xd/components/geek-$1/geek-$1.vue",
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+      "qiun-(.*)": "@/components/qiun-data-charts/components/qiun-$1/qiun-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index",
+      "style": {
+        "navigationBarTitleText": "记账首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/register",
+      "style": {
+        "navigationBarTitleText": "注册",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/reportForm",
+      "style": {
+        "navigationBarTitleText": "报表"
+      }
+    },
+    {
+      "path": "pages/accountBook",
+      "style": {
+        "navigationBarTitleText": "账本"
+      }
+    },
+    {
+      "path": "pages/components/accountBook/AccountBookMembers",
+      "style": {
+        "navigationBarTitleText": "账本成员",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/mine",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/accountPassword",
+      "style": {
+        "navigationBarTitleText": "账号密码/手机号登陆",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/add/index",
+      "style": {
+        "navigationBarTitleText": "记一笔",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/viewDetail",
+      "style": {
+        "navigationBarTitleText": "账单详情"
+      }
+    },
+    {
+      "path": "pages/updateBill",
+      "style": {
+        "navigationBarTitleText": "账单导入"
+      }
+    },
+    {
+      "path": "pages/common/webview/index",
+      "style": {
+        "navigationBarTitleText": "浏览网页"
+      }
+    },
+    {
+      "path": "pages/common/textview/index",
+      "style": {
+        "navigationBarTitleText": "浏览文本"
+      }
+    },
+    {
+      "path": "pages/calendar",
+      "style": {
+        "navigationBarTitleText": "日历"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/mine",
+      "pages": [
+        {
+          "path": "avatar/index",
+          "style": {
+            "navigationBarTitleText": "修改头像"
+          }
+        },
+        {
+          "path": "info/index",
+          "style": {
+            "navigationBarTitleText": "个人信息"
+          }
+        },
+        {
+          "path": "info/edit",
+          "style": {
+            "navigationBarTitleText": "修改信息"
+          }
+        },
+        {
+          "path": "pwd/index",
+          "style": {
+            "navigationBarTitleText": "修改密码"
+          }
+        },
+        {
+          "path": "setting/index",
+          "style": {
+            "navigationBarTitleText": "应用设置"
+          }
+        },
+        {
+          "path": "help/index",
+          "style": {
+            "navigationBarTitleText": "常见问题"
+          }
+        },
+        {
+          "path": "about/index",
+          "style": {
+            "navigationBarTitleText": "关于我们"
+          }
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#000000",
+    "selectedColor": "#000000",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index",
+        "iconPath": "static/images/tabbar/home.png",
+        "selectedIconPath": "static/images/tabbar/home_.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/reportForm",
+        "iconPath": "static/images/tabbar/work.png",
+        "selectedIconPath": "static/images/tabbar/work_.png",
+        "text": "报表"
+      },
+      {
+        "pagePath": "pages/accountBook",
+        "iconPath": "static/images/tabbar/work.png",
+        "selectedIconPath": "static/images/tabbar/work_.png",
+        "text": "账本"
+      },
+      {
+        "pagePath": "pages/mine",
+        "iconPath": "static/images/tabbar/mine.png",
+        "selectedIconPath": "static/images/tabbar/mine_.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "RuoYi",
+    "navigationBarBackgroundColor": "#FFFFFF"
+  }
+}

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.account.mapper.AccountMapper">
+    <resultMap type="Account" id="AccountResult">
+        <result property="id" column="id"/>
+        <result property="accountBaseId" column="account_base_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="accountUrl" column="account_url"/>
+        <result property="hasChild" column="has_child"/>
+        <result property="bookId" column="book_id"/>
+        <result property="balance" column="balance"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createId" column="create_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectAccountVo">
+        select id,
+               account_base_id,
+               parent_id,
+               name,
+               code,
+               account_url,
+               has_child,
+               book_id,
+               balance,
+               del_flag,
+               create_id,
+               create_by,
+               create_time,
+               update_id,
+               update_by,
+               update_time,
+               remark
+        from book_account
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.account.dto.AccountQueryDTO" resultMap="AccountResult">
+        <include refid="selectAccountVo"/>
+        <where>
+            and del_flag = '0'
+            <if test="accountBaseId != null">
+                and account_base_id = #{accountBaseId}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="name != null  and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="code != null  and code != ''">
+                and code = #{code}
+            </if>
+            <if test="accountUrl != null  and accountUrl != ''">
+                and account_url = #{accountUrl}
+            </if>
+            <if test="hasChild != null  and hasChild != ''">
+                and has_child = #{hasChild}
+            </if>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="createId != null">
+                and create_id = #{createId}
+            </if>
+            <if test="updateId != null">
+                and update_id = #{updateId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="AccountResult">
+        <include refid="selectAccountVo"/>
+        where id = #{id}
+          and del_flag = '0'
+    </select>
+    <select id="selectListByBookId" resultType="com.jcwl.admin.account.domain.Account">
+        <include refid="selectAccountVo"/>
+        where book_id = #{bookId}  and has_child = 'N'
+        and del_flag = '0'
+        order by balance desc
+    </select>
+
+    <insert id="insert" parameterType="Account" useGeneratedKeys="true" keyProperty="id">
+        insert into book_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="accountBaseId != null">
+                account_base_id,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="accountUrl != null">
+                account_url,
+            </if>
+            <if test="hasChild != null">
+                has_child,
+            </if>
+            <if test="bookId != null">
+                book_id,
+            </if>
+            <if test="balance != null">
+                balance,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateId != null">
+                update_id,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="accountBaseId != null">
+                #{accountBaseId},
+            </if>
+            <if test="parentId != null">
+                #{parentId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="code != null">
+                #{code},
+            </if>
+            <if test="accountUrl != null">
+                #{accountUrl},
+            </if>
+            <if test="hasChild != null">
+                #{hasChild},
+            </if>
+            <if test="bookId != null">
+                #{bookId},
+            </if>
+            <if test="balance != null">
+                #{balance},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag},
+            </if>
+            <if test="createId != null">
+                #{createId},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateId != null">
+                #{updateId},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into book_account
+        (account_base_id,
+         parent_id,
+         name,
+         code,
+         account_url,
+         has_child,
+         book_id,
+         balance,
+         del_flag,
+         create_id,
+         create_by,
+         create_time,
+         update_id,
+         update_by,
+         update_time,
+         remark)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.accountBaseId},
+             #{item.parentId},
+             #{item.name},
+             #{item.code},
+             #{item.accountUrl},
+             #{item.hasChild},
+             #{item.bookId},
+             #{item.balance},
+             #{item.delFlag},
+             #{item.createId},
+             #{item.createBy},
+             #{item.createTime},
+             #{item.updateId},
+             #{item.updateBy},
+             #{item.updateTime},
+             #{item.remark})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="Account">
+        update book_account
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="accountBaseId != null">
+                account_base_id = #{accountBaseId},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="accountUrl != null">
+                account_url = #{accountUrl},
+            </if>
+            <if test="hasChild != null">
+                has_child = #{hasChild},
+            </if>
+            <if test="bookId != null">
+                book_id = #{bookId},
+            </if>
+            <if test="balance != null">
+                balance = #{balance},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE book_account
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="account_base_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.accountBaseId}
+                </foreach>
+            </trim>
+            <trim prefix="parent_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.parentId}
+                </foreach>
+            </trim>
+            <trim prefix="name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.name}
+                </foreach>
+            </trim>
+            <trim prefix="code = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.code}
+                </foreach>
+            </trim>
+            <trim prefix="account_url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.accountUrl}
+                </foreach>
+            </trim>
+            <trim prefix="has_child = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.hasChild}
+                </foreach>
+            </trim>
+            <trim prefix="book_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.bookId}
+                </foreach>
+            </trim>
+            <trim prefix="balance = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.balance}
+                </foreach>
+            </trim>
+            <trim prefix="del_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.delFlag}
+                </foreach>
+            </trim>
+            <trim prefix="create_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createId}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createBy}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.updateId}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.updateBy}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.updateTime}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.remark}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update book_account
+        set del_flag = '2'
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        update book_account
+        set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByBook" resultType="com.jcwl.admin.account.domain.Account">
+        <include refid="selectAccountVo"/>
+        <where>
+            and del_flag = '0'
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="accountBaseId != null">
+                and account_base_id = #{accountBaseId}
+            </if>
+        </where>
+        limit 1
+    </select>
+</mapper>

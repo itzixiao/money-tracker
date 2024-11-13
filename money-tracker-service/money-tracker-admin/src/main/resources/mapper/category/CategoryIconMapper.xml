@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.category.mapper.CategoryIconMapper">
+    
+    <resultMap type="CategoryIcon" id="CategoryIconResult">
+        <result property="id"    column="id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="name"    column="name"    />
+        <result property="code"    column="code"    />
+        <result property="categoryUrl"    column="category_url"    />
+        <result property="type"    column="type"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectCategoryIconVo">
+      select
+        id,
+        group_name,
+        name,
+        code,
+        category_url,
+        type,
+        del_flag,
+        create_id,
+        create_by,
+        create_time,
+        update_id,
+        update_by,
+        update_time,
+        remark
+      from category_icon
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.category.dto.CategoryIconQueryDTO" resultMap="CategoryIconResult">
+        <include refid="selectCategoryIconVo"/>
+        <where>
+          and del_flag = '0'
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="categoryUrl != null  and categoryUrl != ''"> and category_url = #{categoryUrl}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectById" parameterType="Long" resultMap="CategoryIconResult">
+        <include refid="selectCategoryIconVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+        
+    <insert id="insert" parameterType="CategoryIcon" useGeneratedKeys="true" keyProperty="id">
+        insert into category_icon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupName != null">group_name,</if>
+            <if test="name != null">name,</if>
+            <if test="code != null">code,</if>
+            <if test="categoryUrl != null">category_url,</if>
+            <if test="type != null">type,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupName != null">#{groupName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="code != null">#{code},</if>
+            <if test="categoryUrl != null">#{categoryUrl},</if>
+            <if test="type != null">#{type},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into category_icon
+        (
+            group_name,
+            name,
+            code,
+            category_url,
+            type,
+            del_flag,
+            create_id,
+            create_by,
+            create_time,
+            update_id,
+            update_by,
+            update_time,
+            remark
+        )
+      values
+      <foreach item="item" collection="list" separator=",">
+        (
+            #{item.groupName},
+            #{item.name},
+            #{item.code},
+            #{item.categoryUrl},
+            #{item.type},
+            #{item.delFlag},
+            #{item.createId},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.remark}
+        )
+      </foreach>
+    </insert>
+
+    <update id="update" parameterType="CategoryIcon">
+        update category_icon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="categoryUrl != null">category_url = #{categoryUrl},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatch">
+      UPDATE category_icon
+      <trim prefix="set" suffixOverrides=",">
+          <trim prefix="group_name = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.groupName}
+            </foreach>
+          </trim>
+          <trim prefix="name = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.name}
+            </foreach>
+          </trim>
+          <trim prefix="code = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.code}
+            </foreach>
+          </trim>
+          <trim prefix="category_url = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.categoryUrl}
+            </foreach>
+          </trim>
+          <trim prefix="type = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.type}
+            </foreach>
+          </trim>
+          <trim prefix="del_flag = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.delFlag}
+            </foreach>
+          </trim>
+          <trim prefix="create_id = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.createId}
+            </foreach>
+          </trim>
+          <trim prefix="create_by = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.createBy}
+            </foreach>
+          </trim>
+          <trim prefix="create_time = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.createTime}
+            </foreach>
+          </trim>
+          <trim prefix="update_id = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.updateId}
+            </foreach>
+          </trim>
+          <trim prefix="update_by = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.updateBy}
+            </foreach>
+          </trim>
+          <trim prefix="update_time = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.updateTime}
+            </foreach>
+          </trim>
+          <trim prefix="remark = case" suffix="end,">
+            <foreach collection="list" item="item" index="index">
+              when id=#{item.id} then #{item.remark}
+            </foreach>
+          </trim>
+      </trim>
+      where id in
+      <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+        #{item.id}
+      </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update category_icon set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+      update category_icon set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

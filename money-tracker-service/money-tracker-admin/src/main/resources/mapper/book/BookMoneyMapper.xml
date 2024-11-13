@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.book.mapper.BookMoneyMapper">
+    <resultMap type="BookMoney" id="BookMoneyResult">
+        <result property="id" column="id"/>
+        <result property="bookId" column="book_id"/>
+        <result property="categoryBaseId" column="category_base_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryUrl" column="category_url"/>
+        <result property="accountBaseId" column="account_base_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="accountName" column="account_name"/>
+        <result property="accountUrl" column="account_url"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="money" column="money"/>
+        <result property="bookTime" column="book_time"/>
+        <result property="type" column="type"/>
+        <result property="detailDesc" column="detail_desc"/>
+        <result property="detailDescFlag" column="detail_desc_flag"/>
+        <result property="detailImg" column="detail_img"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createId" column="create_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="logoTypeWhere">
+        <if test="dto.logoType != null">
+            <choose>
+                <when test="dto.logoType == 0">
+                    <!-- 0: 今日 -->
+                    and DATE_FORMAT(bm.book_time
+                                   , '%Y-%m-%d') = #{dto.bookTime}
+                </when>
+                <when test="dto.logoType == 1">
+                    <!-- 1: 本月 -->
+                    and DATE_FORMAT(bm.book_time
+                    , '%Y-%m') = #{dto.bookTime}
+                </when>
+                <when test="dto.logoType == 2">
+                    <!-- 2: 本年 -->
+                    and YEAR(bm.book_time) = #{dto.bookTime}
+                </when>
+            </choose>
+        </if>
+    </sql>
+    <sql id="selectBookMoneyVo">
+        select id,
+               book_id,
+               category_base_id,
+               category_id,
+               category_name,
+               category_url,
+               account_base_id,
+               account_id,
+               account_name,
+               account_url,
+               user_id,
+               user_name,
+               nick_name,
+               money,
+               book_time,
+               type,
+               detail_desc,
+               detail_desc_flag,
+               detail_img,
+               del_flag,
+               create_id,
+               create_by,
+               create_time,
+               update_id,
+               update_by,
+               update_time,
+               remark
+        from book_money
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.book.dto.BookMoneyQueryDTO" resultMap="BookMoneyResult">
+        <include refid="selectBookMoneyVo"/>
+        <where>
+            and del_flag = '0'
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="categoryBaseId != null">
+                and category_base_id = #{categoryBaseId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="categoryName != null  and categoryName != ''">
+                and category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="categoryUrl != null  and categoryUrl != ''">
+                and category_url = #{categoryUrl}
+            </if>
+            <if test="accountBaseId != null">
+                and account_base_id = #{accountBaseId}
+            </if>
+            <if test="accountId != null">
+                and account_id = #{accountId}
+            </if>
+            <if test="accountName != null  and accountName != ''">
+                and account_name like concat('%', #{accountName}, '%')
+            </if>
+            <if test="accountUrl != null  and accountUrl != ''">
+                and account_url = #{accountUrl}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userName != null  and userName != ''">
+                and user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="nickName != null  and nickName != ''">
+                and nick_name like concat('%', #{nickName}, '%')
+            </if>
+            <if test="money != null">
+                and money = #{money}
+            </if>
+            <if test="bookTime != null">
+                and book_time = #{bookTime}
+            </if>
+            <if test="beginBookTime != null and endBookTime != null">
+                and book_time between #{beginBookTime} and #{endBookTime}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="detailDesc != null  and detailDesc != ''">
+                and detail_desc = #{detailDesc}
+            </if>
+            <if test="detailDescFlag != null  and detailDescFlag != ''">
+                and detail_desc_flag = #{detailDescFlag}
+            </if>
+            <if test="detailImg != null  and detailImg != ''">
+                and detail_img = #{detailImg}
+            </if>
+            <if test="createId != null">
+                and create_id = #{createId}
+            </if>
+            <if test="updateId != null">
+                and update_id = #{updateId}
+            </if>
+        </where>
+        order by book_time desc, create_time desc
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="BookMoneyResult">
+        <include refid="selectBookMoneyVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <insert id="insert" parameterType="BookMoney" useGeneratedKeys="true" keyProperty="id">
+        insert into book_money
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">
+                book_id,
+            </if>
+            <if test="categoryBaseId != null">
+                category_base_id,
+            </if>
+            <if test="categoryId != null">
+                category_id,
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                category_name,
+            </if>
+            <if test="categoryUrl != null and categoryUrl != ''">
+                category_url,
+            </if>
+            <if test="accountBaseId != null">
+                account_base_id,
+            </if>
+            <if test="accountId != null">
+                account_id,
+            </if>
+            <if test="accountName != null and accountName != ''">
+                account_name,
+            </if>
+            <if test="accountUrl != null and accountUrl != ''">
+                account_url,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name,
+            </if>
+            <if test="nickName != null and nickName != ''">
+                nick_name,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="bookTime != null">
+                book_time,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="detailDesc != null">
+                detail_desc,
+            </if>
+            <if test="detailDescFlag != null">
+                detail_desc_flag,
+            </if>
+            <if test="detailImg != null">
+                detail_img,
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateId != null">
+                update_id,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">
+                #{bookId},
+            </if>
+            <if test="categoryBaseId != null">
+                #{categoryBaseId},
+            </if>
+            <if test="categoryId != null">
+                #{categoryId},
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                #{categoryName},
+            </if>
+            <if test="categoryUrl != null and categoryUrl != ''">
+                #{categoryUrl},
+            </if>
+            <if test="accountBaseId != null">
+                #{accountBaseId},
+            </if>
+            <if test="accountId != null">
+                #{accountId},
+            </if>
+            <if test="accountName != null and accountName != ''">
+                #{accountName},
+            </if>
+            <if test="accountUrl != null and accountUrl != ''">
+                #{accountUrl},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="userName != null and userName != ''">
+                #{userName},
+            </if>
+            <if test="nickName != null and nickName != ''">
+                #{nickName},
+            </if>
+            <if test="money != null">
+                #{money},
+            </if>
+            <if test="bookTime != null">
+                #{bookTime},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
+            <if test="detailDesc != null">
+                #{detailDesc},
+            </if>
+            <if test="detailDescFlag != null">
+                #{detailDescFlag},
+            </if>
+            <if test="detailImg != null">
+                #{detailImg},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                #{delFlag},
+            </if>
+            <if test="createId != null">
+                #{createId},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateId != null">
+                #{updateId},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into book_money
+        (book_id,
+         category_base_id,
+         category_id,
+         category_name,
+         category_url,
+         account_base_id,
+         account_id,
+         account_name,
+         account_url,
+         user_id,
+         user_name,
+         nick_name,
+         money,
+         book_time,
+         type,
+         detail_desc,
+         detail_desc_flag,
+         detail_img,
+         del_flag,
+         create_id,
+         create_by,
+         create_time,
+         update_id,
+         update_by,
+         update_time,
+         remark)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.bookId},
+             #{item.categoryBaseId},
+             #{item.categoryId},
+             #{item.categoryName},
+             #{item.categoryUrl},
+             #{item.accountBaseId},
+             #{item.accountId},
+             #{item.accountName},
+             #{item.accountUrl},
+             #{item.userId},
+             #{item.userName},
+             #{item.nickName},
+             #{item.money},
+             #{item.bookTime},
+             #{item.type},
+             #{item.detailDesc},
+             #{item.detailDescFlag},
+             #{item.detailImg},
+             #{item.delFlag},
+             #{item.createId},
+             #{item.createBy},
+             #{item.createTime},
+             #{item.updateId},
+             #{item.updateBy},
+             #{item.updateTime},
+             #{item.remark})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="BookMoney">
+        update book_money
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookId != null">
+                book_id = #{bookId},
+            </if>
+            <if test="categoryBaseId != null">
+                category_base_id = #{categoryBaseId},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                category_name = #{categoryName},
+            </if>
+            <if test="categoryUrl != null and categoryUrl != ''">
+                category_url = #{categoryUrl},
+            </if>
+            <if test="accountBaseId != null">
+                account_base_id = #{accountBaseId},
+            </if>
+            <if test="accountId != null">
+                account_id = #{accountId},
+            </if>
+            <if test="accountName != null and accountName != ''">
+                account_name = #{accountName},
+            </if>
+            <if test="accountUrl != null and accountUrl != ''">
+                account_url = #{accountUrl},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="nickName != null and nickName != ''">
+                nick_name = #{nickName},
+            </if>
+            <if test="money != null">
+                money = #{money},
+            </if>
+            <if test="bookTime != null">
+                book_time = #{bookTime},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="detailDesc != null">
+                detail_desc = #{detailDesc},
+            </if>
+            <if test="detailDescFlag != null">
+                detail_desc_flag = #{detailDescFlag},
+            </if>
+            <if test="detailImg != null">
+                detail_img = #{detailImg},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateNickName">
+        update book_money
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nickName != null">
+                nick_name = #{nickName},
+            </if>
+        </trim>
+        where book_id = #{bookId} and user_id = #{userId}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE book_money
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="book_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.bookId}
+                </foreach>
+            </trim>
+            <trim prefix="category_base_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.categoryBaseId}
+                </foreach>
+            </trim>
+            <trim prefix="category_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.categoryId}
+                </foreach>
+            </trim>
+            <trim prefix="category_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.categoryName}
+                </foreach>
+            </trim>
+            <trim prefix="category_url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.categoryUrl}
+                </foreach>
+            </trim>
+            <trim prefix="account_base_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.accountBaseId}
+                </foreach>
+            </trim>
+            <trim prefix="account_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.accountId}
+                </foreach>
+            </trim>
+            <trim prefix="account_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.accountName}
+                </foreach>
+            </trim>
+            <trim prefix="account_url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.accountUrl}
+                </foreach>
+            </trim>
+            <trim prefix="user_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.userId}
+                </foreach>
+            </trim>
+            <trim prefix="user_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.userName}
+                </foreach>
+            </trim>
+            <trim prefix="nick_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.nickName}
+                </foreach>
+            </trim>
+            <trim prefix="money = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.money}
+                </foreach>
+            </trim>
+            <trim prefix="book_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.bookTime}
+                </foreach>
+            </trim>
+            <trim prefix="type = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.type}
+                </foreach>
+            </trim>
+            <trim prefix="detail_desc = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.detailDesc}
+                </foreach>
+            </trim>
+            <trim prefix="detail_desc_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.detailDescFlag}
+                </foreach>
+            </trim>
+            <trim prefix="detail_img = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.detailImg}
+                </foreach>
+            </trim>
+            <trim prefix="del_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.delFlag}
+                </foreach>
+            </trim>
+            <trim prefix="create_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createId}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createBy}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.updateId}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.updateBy}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.updateTime}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id = #{item.id} then #{item.remark}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update book_money set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteByBookId">
+        update book_money set del_flag = '2' where book_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        update book_money set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="groupList" resultType="com.jcwl.admin.book.dto.BookMoneyGroupVO">
+        SELECT
+        DATE_FORMAT(book_time, '%Y-%m-%d') AS book_time,
+        SUM(CASE WHEN type = 0 THEN money ELSE 0 END) AS income,
+        SUM(CASE WHEN type = 1 THEN money ELSE 0 END) AS expenditure
+        FROM book_money
+        <where>
+            and del_flag = '0'
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="categoryName != null  and categoryName != ''">
+                and category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="categoryUrl != null  and categoryUrl != ''">
+                and category_url = #{categoryUrl}
+            </if>
+            <if test="userName != null  and userName != ''">
+                and user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="bookTime != null">
+                and book_time = #{bookTime}
+            </if>
+            <if test="beginBookTime != null and endBookTime != null">
+                and book_time between #{beginBookTime} and #{endBookTime}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(book_time, '%Y-%m-%d')
+        ORDER BY book_time DESC
+    </select>
+
+    <select id="getCountInfo" resultType="com.jcwl.admin.book.dto.BookMoneyCountVO">
+        SELECT
+        DATE_FORMAT(book_time, '%Y-%m') AS book_month,
+        SUM(CASE WHEN type = 0 THEN money ELSE 0 END) AS income,
+        SUM(CASE WHEN type = 1 THEN money ELSE 0 END) AS expenditure,
+        (SUM(CASE WHEN type = 0 THEN money ELSE 0 END) + SUM(CASE WHEN type = 1 THEN money ELSE 0 END)) AS balance
+        FROM book_money
+        <where>
+            and del_flag = '0'
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="categoryName != null  and categoryName != ''">
+                and category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="categoryUrl != null  and categoryUrl != ''">
+                and category_url = #{categoryUrl}
+            </if>
+            <if test="userName != null  and userName != ''">
+                and user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="bookTime != null">
+                and book_time = #{bookTime}
+            </if>
+            <if test="beginBookTime != null and endBookTime != null">
+                and book_time between #{beginBookTime} and #{endBookTime}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(book_time, '%Y-%m')
+    </select>
+    <select id="countReport" resultType="com.jcwl.admin.book.dto.BookReportVO">
+        SELECT NAME
+        ,
+        category_url,
+        SUM( money ) AS money,
+        type
+        FROM
+        (
+        SELECT
+        bm.money,
+        bm.type,
+        cbcb.NAME AS NAME,
+        cbcb.category_url AS category_url
+        FROM
+        book_money bm
+        LEFT JOIN book_category cb ON cb.category_base_id = bm.category_base_id and  bm.book_id = cb.book_id
+        LEFT JOIN category_base cbc ON cb.category_base_id = cbc.category_base_id
+        LEFT JOIN category_base cbcb ON cb.parent_id = cbcb.category_base_id
+        <where>
+            bm.money IS NOT NULL
+            And bm.del_flag = '0' and bm.book_id = #{dto.bookId}
+            and bm.type &lt;&gt; '2'
+            <!--<if test="dto.userId != null">-->
+            <!--    bm.user_id = #{dto.userId}-->
+            <!--</if>-->
+            <!--<if test="dto.type != null">-->
+            <!--    and bm.type = #{dto.type}-->
+            <!--</if>-->
+            <include refid="logoTypeWhere"/>
+        </where>
+        ) aa
+        where aa.`NAME` IS not NULL
+        GROUP BY
+        NAME,
+        category_url,
+        type
+        ORDER BY
+        money DESC;
+    </select>
+    <select id="selectCountReportTrend" resultType="com.jcwl.admin.book.dto.BookMoneyTrendVO">
+        SELECT
+        <choose>
+            <when test="dto.logoType == 0">
+                DATE_FORMAT(book_time, '%Y-%m-%d %H:00') AS bookTime
+            </when>
+            <when test="dto.logoType == 1 ">
+                DATE_FORMAT(book_time, '%Y-%m-%d') AS bookTime
+            </when>
+            <otherwise>
+                DATE_FORMAT(book_time, '%Y-%m') AS bookTime
+            </otherwise>
+        </choose>
+        ,
+        sum(money) as money
+        FROM
+        book_money
+        <where>
+            del_flag = '0'
+            and type = #{type} and type &lt;&gt; '2'
+            <if test="dto.bookId != null">
+                and book_id = #{dto.bookId}
+            </if>
+            <!--<if test="dto.userId != null ">-->
+            <!--    and user_id = #{dto.userId}-->
+            <!--</if>-->
+            <choose>
+                <when test="dto.logoType == 0">
+                    <bind name="dateFormat" value="'%Y-%m-%d %H:00'"/>
+                </when>
+                <when test="dto.logoType == 1">
+                    <bind name="dateFormat" value="'%Y-%m-%d'"/>
+                </when>
+                <otherwise>
+                    <bind name="dateFormat" value="'%Y-%m'"/>
+                </otherwise>
+            </choose>
+            and DATE_FORMAT(book_time, #{dateFormat}) in
+            <foreach collection="dates" item="date" open="(" separator="," close=")">
+                #{date}
+            </foreach>
+        </where>
+        GROUP BY bookTime
+        ORDER BY bookTime DESC
+    </select>
+    <select id="countClassify" resultType="com.jcwl.admin.book.dto.BookReportVO">
+        select
+               bm.category_name as name,
+               sum(bm.money) as money ,
+               bm.type ,
+               bm.category_url
+        from book_money bm
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+        group by name,bm.type,bm.category_url
+        order by money desc
+    </select>
+    <select id="getCountMember" resultType="com.jcwl.admin.book.dto.BookMemberVO">
+        SELECT
+        bu.nick_name AS NAME,
+        count( bm.id ) count
+        FROM
+        book_user bu
+        LEFT JOIN book_money bm ON   bu.book_id = bm.book_id and bu.user_id = bm.user_id
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId} and bu.book_id =  #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+        GROUP BY name
+    </select>
+    <select id="getMemberCompare" resultType="com.jcwl.admin.book.dto.BookMemberCompareVO">
+        SELECT
+        bu.nick_name AS NAME,
+        bu.avatar,
+        SUM( CASE WHEN bm.type = 1 THEN bm.money ELSE 0 END ) AS totalSpending,
+        SUM( CASE WHEN bm.type = 0 THEN bm.money ELSE 0 END ) AS totalRevenue
+        FROM
+        book_user bu
+        LEFT JOIN book_money bm ON  bu.book_id = bm.book_id and bu.user_id = bm.user_id
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId} and bu.book_id = #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+        GROUP BY
+        bu.nick_name,bu.avatar
+    </select>
+    <select id="getMemberCount" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT bm.id) AS total FROM book_user bu
+        LEFT JOIN book_money bm ON  bu.book_id = bm.book_id and bu.user_id = bm.user_id
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId} and bu.book_id = #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+    </select>
+    <select id="expenditureIncome" resultType="com.jcwl.admin.book.dto.BookExpenditureIncomeVO">
+        SELECT
+        bu.nick_name AS NAME,
+        SUM( bm.money ) AS money
+        FROM
+        book_user bu
+        LEFT JOIN book_money bm ON  bu.book_id = bm.book_id and bu.user_id = bm.user_id
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+
+            <if test="dto.type != null">
+                and bm.type = #{dto.type}
+            </if>
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId} and bu.book_id = #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+        GROUP BY
+        NAME
+        order by
+        money DESC
+    </select>
+    <select id="bookLedgerFlowStatistics" resultType="com.jcwl.admin.book.dto.BookLedgerFlowStatisticsVO">
+        SELECT
+        count(1) as pen ,
+        SUM( CASE WHEN bm.type = 1 THEN bm.money ELSE 0 END ) AS totalSpending,
+        SUM( CASE WHEN bm.type = 0 THEN bm.money ELSE 0 END ) AS totalRevenue
+        FROM
+        book_money bm
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+    </select>
+    <select id="getAccountTrend" resultType="com.jcwl.admin.book.dto.BookAccountVO">
+        SELECT
+            sum(balance)
+        FROM
+            book_account
+    </select>
+    <select id="selectMonthlyBalance" resultType="com.jcwl.admin.book.dto.MonthlyBalanceVO">
+
+        WITH statistical_functions AS (
+        SELECT
+        <choose>
+
+            <when test="dto.logoType == 1 ">
+                DATE_FORMAT(book_time, '%Y-%m-%d') AS book_time
+            </when>
+            <otherwise>
+                DATE_FORMAT(book_time, '%Y-%m') AS book_time
+            </otherwise>
+        </choose>
+        ,
+        book_id,
+        SUM( money) AS daily_money
+        FROM
+        book_money
+        <where>
+            <if test="dto.bookId != null">
+                and  book_id = #{dto.bookId}
+            </if>
+        </where>
+        GROUP BY
+        <choose>
+            <when test="dto.logoType == 1 ">
+                DATE_FORMAT(book_time, '%Y-%m-%d')
+            </when>
+            <otherwise>
+                DATE_FORMAT(book_time, '%Y-%m')
+            </otherwise>
+        </choose>
+        , book_id
+        ),
+        cumulative_summary AS (
+        SELECT
+        book_time,
+        book_id,
+        daily_money,
+        SUM(daily_money) OVER (PARTITION BY book_id ORDER BY book_time) AS cumulative_money
+        FROM
+        statistical_functions
+        )
+        SELECT
+        book_time,
+        book_id,
+        daily_money,
+        cumulative_money as balance
+        FROM
+        cumulative_summary bm
+        <!--<where>-->
+        <!--        book_time-->
+        <!--           between #{startTime} and #{endTime}-->
+        <!--</where>-->
+        ORDER BY
+        book_time;
+    </select>
+    <select id="selectAccountingPen" resultType="com.jcwl.admin.book.domain.BookMoney">
+        select
+         bm.type
+        from book_money bm
+        <where>
+            bm.del_flag = '0' and bm.type &lt;&gt; '2'
+
+            <if test="dto.bookId != null">
+                and bm.book_id = #{dto.bookId}
+            </if>
+            <include refid="logoTypeWhere"/>
+        </where>
+
+    </select>
+</mapper>

@@ -1,23 +1,74 @@
-# Compiled class file
-*.class
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Log file
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 *.log
+.fastRequest
+logs/
 
-# BlueJ files
-*.ctxt
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+### VS Code ###
+.vscode/
 
-# Package Files #
+# 忽略生成的文件
+dist/
+unpackage/
+*.class
 *.jar
 *.war
-*.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# 忽略依赖管理工具生成的目录
+node_modules/
+bower_components/
+vendor/
+
+# 忽略操作系统文件
+.DS_Store
+Thumbs.db
+
+# 忽略敏感或包含个人信息的文件（根据需要添加更多）
+credentials.json
+config.ini
+secrets.txt
+
+# 忽略其他自定义的文件或目录
+/custom_directory/
+
+# 排除特定扩展名的文件（根据需要添加更多）
+*.bak
+*.tmp
+
+# 排除特定文件名（根据需要添加更多）
+debug.log
+
+# 不排除下列扩展名的文件
+!*.allowed_extension
+
+# 不排除下列文件名
+!important_file.txt

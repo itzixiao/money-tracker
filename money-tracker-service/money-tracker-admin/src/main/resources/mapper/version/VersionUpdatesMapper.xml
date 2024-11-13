@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.version.mapper.VersionUpdatesMapper">
+
+    <resultMap type="VersionUpdates" id="VersionUpdatesResult">
+        <result property="id"    column="id"    />
+        <result property="version"    column="version"    />
+        <result property="url"    column="url"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="minioFileName"    column="minio_file_name"    />
+        <result property="size"    column="size"    />
+        <result property="fixContent"    column="fix_content"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectVersionUpdatesVo">
+        select
+            id,
+            version,
+            url,
+            file_name,
+            minio_file_name,
+            size,
+            fix_content,
+            remark,
+            del_flag,
+            create_id,
+            create_by,
+            create_time,
+            update_id,
+            update_by,
+            update_time
+        from version_updates
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.version.dto.VersionUpdatesQueryDTO" resultMap="VersionUpdatesResult">
+        <include refid="selectVersionUpdatesVo"/>
+        <where>
+            and del_flag = '0'
+            <if test="version != null  and version != ''"> and version = #{version}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name = #{fileName}</if>
+            <if test="minioFileName != null  and minioFileName != ''"> and minio_file_name like concat('%', #{minioFileName}, '%')</if>
+            <if test="size != null  and size != ''"> and size = #{size}</if>
+            <if test="fixContent != null  and fixContent != ''"> and fix_content = #{fixContent}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+        </where>
+        ORDER BY
+        SUBSTRING_INDEX(version, '.', 1) + 0 DESC,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(version, '.', 2), '.', -1) + 0 DESC,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(version, '.', -1), '-', 1) + 0 DESC,
+        create_time desc
+        ;
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="VersionUpdatesResult">
+        <include refid="selectVersionUpdatesVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <insert id="insert" parameterType="VersionUpdates" useGeneratedKeys="true" keyProperty="id">
+        insert into version_updates
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="version != null">version,</if>
+            <if test="url != null">url,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="minioFileName != null">minio_file_name,</if>
+            <if test="size != null">size,</if>
+            <if test="fixContent != null">fix_content,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="version != null">#{version},</if>
+            <if test="url != null">#{url},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="minioFileName != null">#{minioFileName},</if>
+            <if test="size != null">#{size},</if>
+            <if test="fixContent != null">#{fixContent},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into version_updates
+        (
+        version,
+        url,
+        file_name,
+        minio_file_name,
+        size,
+        fix_content,
+        remark,
+        del_flag,
+        create_id,
+        create_by,
+        create_time,
+        update_id,
+        update_by,
+        update_time
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.version},
+            #{item.url},
+            #{item.fileName},
+            #{item.minioFileName},
+            #{item.size},
+            #{item.fixContent},
+            #{item.remark},
+            #{item.delFlag},
+            #{item.createId},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateBy},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="VersionUpdates">
+        update version_updates
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="version != null">version = #{version},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="minioFileName != null">minio_file_name = #{minioFileName},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="fixContent != null">fix_content = #{fixContent},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE version_updates
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="version = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.version}
+                </foreach>
+            </trim>
+            <trim prefix="url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.url}
+                </foreach>
+            </trim>
+            <trim prefix="file_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.fileName}
+                </foreach>
+            </trim>
+            <trim prefix="minio_file_name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.minioFileName}
+                </foreach>
+            </trim>
+            <trim prefix="size = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.size}
+                </foreach>
+            </trim>
+            <trim prefix="fix_content = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.fixContent}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.remark}
+                </foreach>
+            </trim>
+            <trim prefix="del_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.delFlag}
+                </foreach>
+            </trim>
+            <trim prefix="create_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.createId}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.createBy}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.updateId}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.updateBy}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then #{item.updateTime}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        update version_updates set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        update version_updates set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

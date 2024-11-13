@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.category.mapper.CategoryBaseMapper">
+    <resultMap type="CategoryBase" id="CategoryBaseResult">
+        <result property="categoryBaseId" column="category_base_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="categoryUrl" column="category_url"/>
+        <result property="hasChild" column="has_child"/>
+        <result property="type" column="type"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createId" column="create_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectCategoryBaseVo">
+        select category_base_id,
+               parent_id,
+               name,
+               code,
+               category_url,
+               has_child,
+               type,
+               del_flag,
+               create_id,
+               create_by,
+               create_time,
+               update_id,
+               update_by,
+               update_time,
+               remark
+        from category_base
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.category.dto.CategoryBaseQueryDTO"
+            resultMap="CategoryBaseResult">
+        <include refid="selectCategoryBaseVo"/>
+        <where>
+            and del_flag = '0'
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="name != null  and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="code != null  and code != ''">
+                and code = #{code}
+            </if>
+            <if test="categoryUrl != null  and categoryUrl != ''">
+                and category_url = #{categoryUrl}
+            </if>
+            <if test="hasChild != null  and hasChild != ''">
+                and has_child = #{hasChild}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="createId != null">
+                and create_id = #{createId}
+            </if>
+            <if test="updateId != null">
+                and update_id = #{updateId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectByCategoryBaseId" parameterType="Long" resultMap="CategoryBaseResult">
+        <include refid="selectCategoryBaseVo"/>
+        where category_base_id = #{categoryBaseId} and del_flag = '0'
+    </select>
+
+    <insert id="insert" parameterType="CategoryBase" useGeneratedKeys="true" keyProperty="categoryBaseId">
+        insert into category_base
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="categoryUrl != null">
+                category_url,
+            </if>
+            <if test="hasChild != null">
+                has_child,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateId != null">
+                update_id,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                #{parentId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="code != null">
+                #{code},
+            </if>
+            <if test="categoryUrl != null">
+                #{categoryUrl},
+            </if>
+            <if test="hasChild != null">
+                #{hasChild},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag},
+            </if>
+            <if test="createId != null">
+                #{createId},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateId != null">
+                #{updateId},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into category_base
+        (
+        parent_id,
+        name,
+        code,
+        category_url,
+        has_child,
+        type,
+        del_flag,
+        create_id,
+        create_by,
+        create_time,
+        update_id,
+        update_by,
+        update_time,
+        remark
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.parentId},
+            #{item.name},
+            #{item.code},
+            #{item.categoryUrl},
+            #{item.hasChild},
+            #{item.type},
+            #{item.delFlag},
+            #{item.createId},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.remark}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="CategoryBase">
+        update category_base
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="categoryUrl != null">
+                category_url = #{categoryUrl},
+            </if>
+            <if test="hasChild != null">
+                has_child = #{hasChild},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </trim>
+        where category_base_id = #{categoryBaseId}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE category_base
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="parent_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.parentId}
+                </foreach>
+            </trim>
+            <trim prefix="name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.name}
+                </foreach>
+            </trim>
+            <trim prefix="code = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.code}
+                </foreach>
+            </trim>
+            <trim prefix="category_url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.categoryUrl}
+                </foreach>
+            </trim>
+            <trim prefix="has_child = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.hasChild}
+                </foreach>
+            </trim>
+            <trim prefix="type = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.type}
+                </foreach>
+            </trim>
+            <trim prefix="del_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.delFlag}
+                </foreach>
+            </trim>
+            <trim prefix="create_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.createId}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.createBy}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.updateId}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.updateBy}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.updateTime}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when category_base_id=#{item.categoryBaseId} then #{item.remark}
+                </foreach>
+            </trim>
+        </trim>
+        where category_base_id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.categoryBaseId}
+        </foreach>
+    </update>
+
+    <delete id="deleteByCategoryBaseId" parameterType="Long">
+        update category_base set del_flag = '2' where category_base_id = #{categoryBaseId}
+    </delete>
+
+    <delete id="deleteByCategoryBaseIds" parameterType="String">
+        update category_base set del_flag = '2' where category_base_id in
+        <foreach item="categoryBaseId" collection="array" open="(" separator="," close=")">
+            #{categoryBaseId}
+        </foreach>
+    </delete>
+</mapper>

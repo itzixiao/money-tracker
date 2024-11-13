@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.system.mapper.SysUserOpenMapper">
+    <resultMap type="SysUserOpen" id="SysUserOpenResult">
+        <result property="userId" column="user_id"/>
+        <result property="openId" column="open_id"/>
+    </resultMap>
+
+    <sql id="selectSysUserOpenVo">
+        select user_id,
+               open_id
+        from sys_user_open
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.system.dto.SysUserOpenQueryDTO" resultMap="SysUserOpenResult">
+        <include refid="selectSysUserOpenVo"/>
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="openId != null  and openId != ''">
+                and open_id = #{openId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectByUserId" parameterType="Long" resultMap="SysUserOpenResult">
+        <include refid="selectSysUserOpenVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectByOpenId" resultType="com.jcwl.admin.system.domain.SysUserOpen">
+        <include refid="selectSysUserOpenVo"/>
+        where open_id = #{openId}
+    </select>
+
+    <insert id="insert" parameterType="SysUserOpen">
+        insert into sys_user_open
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="openId != null">
+                open_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="openId != null">
+                #{openId},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into sys_user_open
+        (user_id,
+         open_id)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{item.userId},
+             #{item.openId})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="SysUserOpen">
+        update sys_user_open
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="openId != null">
+                open_id = #{openId},
+            </if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE sys_user_open
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="user_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when user_id = #{item.userId} then #{item.userId}
+                </foreach>
+            </trim>
+            <trim prefix="open_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when user_id = #{item.userId} then #{item.openId}
+                </foreach>
+            </trim>
+        </trim>
+        where user_id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.userId}
+        </foreach>
+    </update>
+    <delete id="deleteByUserId" parameterType="Long">
+        DELETE
+        FROM sys_user_open
+        WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByUserIds" parameterType="List">
+        DELETE
+        FROM sys_user_open
+        WHERE user_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

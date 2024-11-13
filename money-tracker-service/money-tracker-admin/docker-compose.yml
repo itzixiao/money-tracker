@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_DRUID_MASTER_URL=jdbc:mysql://db:3306/money-tracker?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      - SPRING_DATASOURCE_DRUID_MASTER_USERNAME=root
+      - SPRING_DATASOURCE_DRUID_MASTER_PASSWORD=admin@123
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_PASSWORD=admin@123
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=admin@123
+    depends_on:
+      - db
+      - redis
+      - minio
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin@123
+      - MYSQL_DATABASE=money-tracker
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+
+  redis:
+    image: redis:6.2
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=admin@123
+    command: server /data
+    volumes:
+      - minio-data:/data
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+  minio-data:
+
+networks:
+  app-network:
+    driver: bridge

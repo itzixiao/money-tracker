@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jcwl.admin.account.mapper.AccountBaseMapper">
+    <resultMap type="AccountBase" id="AccountBaseResult">
+        <result property="accountBaseId" column="account_base_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="accountUrl" column="account_url"/>
+        <result property="hasChild" column="has_child"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createId" column="create_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectAccountBaseVo">
+        select account_base_id,
+               parent_id,
+               name,
+               code,
+               account_url,
+               has_child,
+               del_flag,
+               create_id,
+               create_by,
+               create_time,
+               update_id,
+               update_by,
+               update_time,
+               remark
+        from account_base
+    </sql>
+
+    <select id="selectList" parameterType="com.jcwl.admin.account.dto.AccountBaseQueryDTO"
+            resultMap="AccountBaseResult">
+        <include refid="selectAccountBaseVo"/>
+        <where>
+            and del_flag = '0'
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="name != null  and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="code != null  and code != ''">
+                and code = #{code}
+            </if>
+            <if test="accountUrl != null  and accountUrl != ''">
+                and account_url = #{accountUrl}
+            </if>
+            <if test="hasChild != null  and hasChild != ''">
+                and has_child = #{hasChild}
+            </if>
+            <if test="createId != null">
+                and create_id = #{createId}
+            </if>
+            <if test="updateId != null">
+                and update_id = #{updateId}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectByAccountBaseId" parameterType="Long" resultMap="AccountBaseResult">
+        <include refid="selectAccountBaseVo"/>
+        where account_base_id = #{accountBaseId} and del_flag = '0'
+    </select>
+
+    <insert id="insert" parameterType="AccountBase" useGeneratedKeys="true" keyProperty="accountBaseId">
+        insert into account_base
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="accountUrl != null">
+                account_url,
+            </if>
+            <if test="hasChild != null">
+                has_child,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateId != null">
+                update_id,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                #{parentId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="code != null">
+                #{code},
+            </if>
+            <if test="accountUrl != null">
+                #{accountUrl},
+            </if>
+            <if test="hasChild != null">
+                #{hasChild},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag},
+            </if>
+            <if test="createId != null">
+                #{createId},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateId != null">
+                #{updateId},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into account_base
+        (
+        parent_id,
+        name,
+        code,
+        account_url,
+        has_child,
+        del_flag,
+        create_id,
+        create_by,
+        create_time,
+        update_id,
+        update_by,
+        update_time,
+        remark
+        )
+        values
+        <foreach item="item" collection="list" separator=",">
+            (
+            #{item.parentId},
+            #{item.name},
+            #{item.code},
+            #{item.accountUrl},
+            #{item.hasChild},
+            #{item.delFlag},
+            #{item.createId},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.remark}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="AccountBase">
+        update account_base
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="accountUrl != null">
+                account_url = #{accountUrl},
+            </if>
+            <if test="hasChild != null">
+                has_child = #{hasChild},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </trim>
+        where account_base_id = #{accountBaseId}
+    </update>
+
+    <update id="updateBatch">
+        UPDATE account_base
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="parent_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.parentId}
+                </foreach>
+            </trim>
+            <trim prefix="name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.name}
+                </foreach>
+            </trim>
+            <trim prefix="code = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.code}
+                </foreach>
+            </trim>
+            <trim prefix="account_url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.accountUrl}
+                </foreach>
+            </trim>
+            <trim prefix="has_child = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.hasChild}
+                </foreach>
+            </trim>
+            <trim prefix="del_flag = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.delFlag}
+                </foreach>
+            </trim>
+            <trim prefix="create_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.createId}
+                </foreach>
+            </trim>
+            <trim prefix="create_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.createBy}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="update_id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.updateId}
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.updateBy}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.updateTime}
+                </foreach>
+            </trim>
+            <trim prefix="remark = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when account_base_id=#{item.accountBaseId} then #{item.remark}
+                </foreach>
+            </trim>
+        </trim>
+        where account_base_id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.accountBaseId}
+        </foreach>
+    </update>
+
+    <delete id="deleteByAccountBaseId" parameterType="Long">
+        update account_base set del_flag = '2' where account_base_id = #{accountBaseId}
+    </delete>
+
+    <delete id="deleteByAccountBaseIds" parameterType="String">
+        update account_base set del_flag = '2' where account_base_id in
+        <foreach item="accountBaseId" collection="array" open="(" separator="," close=")">
+            #{accountBaseId}
+        </foreach>
+    </delete>
+</mapper>

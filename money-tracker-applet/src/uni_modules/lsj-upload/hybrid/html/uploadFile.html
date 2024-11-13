@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+	<head>
+		<meta charset="UTF-8">
+		<title class="title">[文件管理器]</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<style type="text/css">
+			.content {background: transparent;}
+			.btn {position: relative;top: 0;left: 0;bottom: 0;right: 0;}
+			.file {position: fixed;z-index: 93;left: 0;right: 0;top: 0;bottom: 0;width: 100%;opacity: 0;}
+		</style>
+	</head>
+
+	<body>
+		
+		<div id="content" class="content">
+			<div id="btn" class="btn">
+				<input v-if="compatibleFile" :multiple="multiple" @change="onChange" @click="onClick" :accept="accept" ref="file" class="file" type="file" />
+				<div v-else @click="onClick" class="file"></div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="js/vue.min.js"></script>
+		<script type="text/javascript" src="js/permission.js"></script>
+		<script type="text/javascript">
+			let _this;
+			var vm = new Vue({
+				el: '#content',
+				data: {
+					accept: '',
+					multiple: true,
+					isIos: false,
+					compatibleFile: false,
+					dom: null
+				},
+				mounted() {
+					this.debug&&console.log('加载webview');
+					_this = this;
+					this.files = new Map();
+					document.addEventListener('plusready', (e)=>{
+					let {debug,instantly,prohibited,parent,isVUE3} = plus.webview.currentWebview();
+					this.isIos = (plus.os.name == "iOS");
+					this.debug = debug;
+					this.instantly = instantly;
+					this.prohibited = prohibited;
+					
+					
+					let module;
+					if (isVUE3==='YES') {module = parent}
+					else {module = parent.replace(/^\.\/(.*)\.\w+$/, '$1')}
+					if (!module.includes(atob('bHNqLQ=='))) {return;}
+					if (this.prohibited.multiple === 'false') {
+						this.prohibited.multiple = false;
+					}
+					if (this.prohibited.isPermissionInToast === 'false') {
+						this.prohibited.isPermissionInToast = false;
+					}
+					if (this.prohibited.isPermissionInModal === 'false') {
+						this.prohibited.isPermissionInModal = false;
+					}
+					if (this.prohibited.toBase === 'false') {
+						this.prohibited.toBase = false;
+					}
+					this.accept = prohibited.accept; 
+					this.multiple = this.prohibited.multiple;
+					location.href = 'callback?retype=updateOption';
+					if (!this.isIos && this.prohibited.permission.android.length) {
+						try{
+							this.dom = document.createElement('input');
+							this.dom.type = 'file';
+							this.dom.value = '';
+							this.dom.accept = this.accept;
+							this.dom.multiple = this.multiple;
+							this.dom.onchange = event => {
+								this.onChange(event)
+							};
+						}catch(e){
+							console.error(e);
+							this.compatibleFile = true;
+						}
+					}
+					else {
+						this.compatibleFile = true;
+					}
+					
+					}, false);
+				},
+				methods: {
+					toast(msg) {
+						plus.nativeUI.toast(msg);
+					},
+					clear(name) {
+						if (!name) {
+							this.files.clear();
+							return;
+						}
+						this.files.delete(name);
+					},
+					setData(option='{}') {
+						this.debug&&console.log('更新参数：'+option);
+						try{
+							_this.option = JSON.parse(option);
+						}catch(e){
+							console.error('参数设置错误')
+						}
+					},
+					async upload(name=''){
+						if (name && this.files.has(name)) {
+							await this.createUpload(this.files.get(name));
+						}
+						else {
+							for (let item of this.files.values()) {
+								if (item.type === 'waiting' || item.type === 'fail') {
+									await this.createUpload(item);
+								}
+							}
+						}
+					},
+					permissionModal(p) {
+						let message = p.message || '是否前往开启权限？'
+						plus.nativeUI.confirm(message,(e)=>{
+							if (e.index === 0) {
+								gotoAppPermissionSetting();
+							}
+						},'提示',['确定','取消']);
+					},
+					permissionToast(p) {
+						if (this.prohibited.isPermissionInToast) {
+							plus.nativeUI.toast(`<font style="font-size:14px">${p.message}</font>`,
+								{
+									type:'richtext',
+									duration:'long',
+									richTextStyle:{
+										align:'center'
+									},
+									verticalAlign: 'top'
+							});
+						}
+						else {
+							location.href = `callback?retype=permissionBefore&permission=${p.value}&message=${encodeURIComponent(p.message)}`;
+						}
+					},
+					async onClick(event) {
+						if (this.isIos) {
+							// ios未测过，因为现在没必要弹权限提示，android是因为华为bibi~，后面如果有问题可以联系我处理
+							let permission = this.prohibited.permission.ios;
+							if (permission && permission.length) {
+								let t = null;
+								for (let p of permission) {
+									t = setTimeout(()=> {
+										this.permissionToast(p);
+									},500);
+									let result = judgeIosPermission(p.value)
+									if (!result) {
+										this.debug&&console.error('用户未同意权限，提示用户申请');
+										event.preventDefault();
+										location.href = `callback?retype=permissionFail&permission=${p.value}&permissionResult=${result}&message=${encodeURIComponent(p.message)}`;
+										if (this.prohibited.isPermissionInModal) {
+											this.permissionModal(p);
+										}
+									}
+									else {
+										clearTimeout(t)
+									}
+									
+								}
+							}
+						}
+						else if (!this.compatibleFile) {
+							let permission = this.prohibited.permission.android;
+							if (permission && permission.length) {
+								let t = null;
+								for (let p of permission) {
+									t = setTimeout(()=> {
+										this.permissionToast(p);
+									},200)
+									let _dom = null;
+									let result = await requestAndroidPermission(p.value)
+									if (result !== 1) {
+										event.preventDefault();
+										this.debug&&console.error('用户未同意权限，提示用户申请');
+										location.href = `callback?retype=permissionFail&permission=${p.value}&permissionResult=${result}&message=${encodeURIComponent(p.message)}`;
+										if (this.prohibited.isPermissionInModal) {
+											this.permissionModal(p);
+										}
+										return;
+									}
+									else {
+										clearTimeout(t)
+									}
+								}
+								clearTimeout(t)
+								setTimeout(()=>{
+								this.dom.click();
+								this.dom.classList.add('file');
+								document.getElementById('btn').appendChild(this.dom);
+								},0)
+							}
+							else {
+								setTimeout(()=>{
+								this.dom.click();
+								this.dom.classList.add('file');
+								document.getElementById('btn').appendChild(this.dom);
+								},0)
+							}
+						}
+					},
+					async onChange(e) {
+						let fileDom;
+						if (!this.compatibleFile) {
+							fileDom = e.target || this.dom;
+						}
+						else {
+							fileDom = this.$refs.file;
+						}
+						for (let file of fileDom.files) {
+							if (this.files.size >= this.prohibited.count) {
+								this.toast(`只允许上传${this.prohibited.count}个文件`);
+								fileDom.value = '';
+								break;
+							}
+							await this.addFile(file);
+						}
+						this.uploadAfter();
+						fileDom.value = '';
+					},
+					addFile(file) {
+						return new Promise((resolve,reject)=> {
+							if (file) {
+								let name = file.name;
+								this.debug&&console.log('文件名称',name,'大小',file.size);
+								// 限制文件格式
+								let suffix = name.substring(name.lastIndexOf(".")+1).toLowerCase();
+								let formats = this.prohibited.formats.toLowerCase();
+								if (formats&&!formats.includes(suffix)) {
+									this.toast(`不支持上传${suffix.toUpperCase()}格式文件`);
+									return resolve();
+								}
+								// 限制文件大小
+								if (file.size > 1024 * 1024 * Math.abs(this.prohibited.size)) {
+									this.toast(`附件大小请勿超过${this.prohibited.size}M`)
+									return resolve();
+								}
+								try{
+									if (!this.prohibited.distinct) {
+										let duplicateFile = [...this.files.keys()].filter(item=>{
+											return (item.substring(0,item.lastIndexOf("("))||item.substring(0,item.lastIndexOf("."))) == name.substring(0,name.lastIndexOf(".")) &&
+											item.substring(item.lastIndexOf(".")+1).toLowerCase() === suffix;
+										})
+										if (duplicateFile.length) {
+											name = `${name.substring(0,name.lastIndexOf("."))}(${duplicateFile.length}).${suffix}`;
+										}
+									}
+								}catch(e){
+									name = Date.now() +'_'+ name;
+								}
+								let path = URL.createObjectURL(file);
+								
+								try{
+									if (this.prohibited.toBase) {
+										let reader = new FileReader();
+										reader.readAsDataURL(file); 
+										let _this = this;
+										reader.onload = function(){
+											_this.files.set(name,{file:encodeURIComponent(this.result),path,name: name,size: file.size,progress: 0,type: 'waiting'});
+											return resolve();
+										}
+										reader.onerror = function(){throw 'file to base64 error';}
+									} else {
+										throw '';
+									}
+								}catch(e){
+									this.files.set(name,{file,path,name: name,size: file.size,progress: 0,type: 'waiting'});
+									return resolve();
+								}
+							}
+						})
+					},
+					/**
+					 * @returns {Map} 已选择的文件Map集
+					 */
+					callChange() {
+						location.href = 'callback?retype=change&files=' + encodeURIComponent(JSON.stringify([...this.files]));
+					},
+					/**
+					 * @returns {object} 正在处理的当前对象
+					 */
+					changeFilesItem(item,end='') {
+						this.files.set(item.name,item);
+						location.href = 'callback?retype=progress&end='+ end +'&item=' + encodeURIComponent(JSON.stringify(item));
+					},
+					uploadAfter() {
+						this.callChange();
+						setTimeout(()=>{
+							this.instantly&&this.upload();
+						},1000)
+					},
+					createUpload(item) {
+						this.debug&&console.log('准备上传,option=：'+JSON.stringify(this.option));
+						item.type = 'loading';
+						delete item.responseText;
+						return new Promise((resolve,reject)=>{
+							let {url,name,method='POST',header={},formData={}} = this.option;
+							let form = new FormData();
+							for (let keys in formData) {
+								form.append(keys, formData[keys])
+							}
+							form.append(name, item.file);
+							let xmlRequest = new XMLHttpRequest();
+							xmlRequest.open(method, url, true);
+							for (let keys in header) {
+								xmlRequest.setRequestHeader(keys, header[keys])
+							}
+							xmlRequest.upload.addEventListener(
+								'progress',
+								event => {
+									if (event.lengthComputable) {
+										let progress = Math.ceil((event.loaded * 100) / event.total)
+										if (progress <= 100) {
+											item.progress = progress;
+											this.changeFilesItem(item);
+										}
+									}
+								},
+								false
+							);
+							
+							xmlRequest.ontimeout = () => {
+								console.error('请求超时')
+								item.type = 'fail';
+								this.changeFilesItem(item,true);
+								return resolve(false);
+							}
+							
+							xmlRequest.onreadystatechange = ev => {
+								if (xmlRequest.readyState == 4) {
+									this.debug && console.log('接口是否支持跨域',xmlRequest.withCredentials); 
+									if (xmlRequest.status == 200) {
+										this.debug && console.log('上传完成：' + xmlRequest.responseText)
+										item['responseText'] = xmlRequest.responseText;
+										item.type = 'success';
+										this.changeFilesItem(item,true);
+										return resolve(true);
+									} else if (xmlRequest.status == 0) {
+										console.error('status = 0 :请检查请求头Content-Type与服务端是否匹配，服务端已正确开启跨域，并且nginx未拦截阻止请求')
+									}
+									console.error('--ERROR--：status = ' + xmlRequest.status) 
+									item.type = 'fail';
+									this.changeFilesItem(item,true);
+									return resolve(false);
+								}
+							}
+							xmlRequest.send(form)
+						});
+						
+					}
+				}
+			});
+			
+		</script>
+	</body>
+
+</html>

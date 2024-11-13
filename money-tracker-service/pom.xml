@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.jcwl</groupId>
+        <artifactId>base-support</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <artifactId>money-tracker-service</artifactId>
+    <version>1.0.0</version>
+    <name>money-tracker-service</name>
+    <description>money-tracker-service业务管理</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <weixin-java.version>4.6.0</weixin-java.version>
+        <tencentcloud-sdk-java.version>3.1.917</tencentcloud-sdk-java.version>
+        <screw-core.version>1.0.5</screw-core.version>
+        <zip4j.version>2.9.0</zip4j.version>
+    </properties>
+
+    <modules>
+        <module>money-tracker-admin</module>
+    </modules>
+
+    <!-- 依赖声明 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringBoot的依赖配置-->
+            <dependency>
+                <groupId>com.jcwl</groupId>
+                <artifactId>base-support</artifactId>
+                <version>${base.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- 微信小程序 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-miniapp</artifactId>
+                <version>${weixin-java.version}</version>
+            </dependency>
+            <!--Tencent Cloud Open API SDK for Java-->
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java</artifactId>
+                <version>${tencentcloud-sdk-java.version}</version>
+            </dependency>
+            <!-- 数据库问文档生成 -->
+            <dependency>
+                <groupId>cn.smallbun.screw</groupId>
+                <artifactId>screw-core</artifactId>
+                <version>${screw-core.version}</version>
+            </dependency>
+            <!-- zip4j -->
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+
+    </build>
+
+</project>
